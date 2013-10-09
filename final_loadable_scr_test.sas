@@ -119,11 +119,11 @@ if first.patient and first.CLI_PLAN_EVE_NAME then repeat_sn=0;repeat_sn+1;end;if
 by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name dcm_question_grp_name repeat_sn qualifying_value study;var _all_;run;data tran_dmg2;length dcm_subset_name $8;set tran_dmg2;_NAME_=upcase(_NAME_);
 data dmg2(drop=variable dataset);set newdata.formats;length _name_ $21 dcm_subset_name $8;if dataset='DMG';_name_=variable ;run;
 proc sort data=dmg2;by dcm_subset_name _name_;run;proc sort data=tran_dmg2 out=dmg_data1;by dcm_subset_name _name_;run;
-data occ_dmg2;merge dmg_data1 dmg2;by dcm_subset_name _name_;run;proc sort data=occ_dmg2;
-by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name dcm_question_grp_name _name_ dcm_que_occ_sn repeat_sn ;run;
+data occ_dmg2;set dmg_data1 ;by dcm_subset_name _name_;run;proc sort data=occ_dmg2;
+by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name dcm_question_grp_name _name_ repeat_sn ;run;
 
-data tran.dmg2;retain patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name dcm_que_occ_sn repeat_sn value_text qualifying_value study;
-keep patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name dcm_que_occ_sn repeat_sn value_text qualifying_value study;
+data tran.dmg2;retain patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name repeat_sn value_text qualifying_value study;
+keep patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name repeat_sn value_text qualifying_value study;
 length dci_name dcm_question_grp_name $30 value_text $500 qualifying_value $30; set occ_dmg2(rename=(_name_=dcm_question_name col1=value_text));
 dcm_question_name = upcase(dcm_question_name);
 if dcm_question_name in('PATIENT','CLI_PLAN_EVE_NAME','SUBEVENT_NUMBER','DCI_NAME','DCM_NAME','DCM_SUBSET_NAME','DCM_QUESTION_GRP_NAME', 'DCM_QUE_OCC_SN','REPEAT','REPEAT_SN','REC_N','QUALIFYING_VALUE','STUDY') then delete;run;
@@ -171,10 +171,10 @@ proc sort data= scr1;by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_n
 by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name dcm_question_grp_name repeat_sn qualifying_value study;var _all_;run;data tran_scr1;length dcm_subset_name $8;set tran_scr1;_NAME_=upcase(_NAME_);
 data scr1(drop=variable dataset);set newdata.formats;length _name_ $21 dcm_subset_name $8;if dataset='SCR1';_name_=variable ;run;
 proc sort data=scr1;by dcm_subset_name _name_;run;proc sort data=tran_scr1 out=scr1_data;by dcm_subset_name _name_;run;
-data occ_scr1;merge scr1_data scr1;by dcm_subset_name _name_;run;proc sort data=occ_scr1;
-by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name dcm_question_grp_name _name_ dcm_que_occ_sn repeat_sn ;run;
-data tran.scr1;retain patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name dcm_que_occ_sn repeat_sn value_text qualifying_value study;
-keep patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name dcm_que_occ_sn repeat_sn value_text qualifying_value study;
+data occ_scr1;set scr1_data ;by dcm_subset_name _name_;run;proc sort data=occ_scr1;
+by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name dcm_question_grp_name _name_ repeat_sn ;run;
+data tran.scr1;retain patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name repeat_sn value_text qualifying_value study;
+keep patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name repeat_sn value_text qualifying_value study;
 length dci_name dcm_question_grp_name $30 value_text $500 qualifying_value $30; set occ_scr1(rename=(_name_=dcm_question_name col1=value_text));
 if dcm_question_name in('PATIENT','CLI_PLAN_EVE_NAME','SUBEVENT_NUMBER','DCI_NAME','DCM_NAME','DCM_SUBSET_NAME','DCM_QUESTION_GRP_NAME', 'DCM_QUE_OCC_SN','REPEAT','REPEAT_SN','REC_N','QUALIFYING_VALUE','STUDY') then delete;run;
 
@@ -211,10 +211,10 @@ proc sort data= scr2;by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_n
 by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name dcm_question_grp_name repeat_sn qualifying_value study;var _all_;run;data tran_scr2;length dcm_subset_name $8;set tran_scr2;_NAME_=upcase(_NAME_);
 data scr2(drop=variable dataset);set newdata.formats;length _name_ $21 dcm_subset_name $8;if dataset='SCR2';_name_=variable ;run;
 proc sort data=scr2;by dcm_subset_name _name_;run;proc sort data=tran_scr2 out=scr2_data;by dcm_subset_name _name_;run;
-data occ_scr2;merge scr2_data scr2;by dcm_subset_name _name_;run;proc sort data=occ_scr2;
-by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name dcm_question_grp_name _name_ dcm_que_occ_sn repeat_sn ;run;
-data tran.scr2;retain patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name dcm_que_occ_sn repeat_sn value_text qualifying_value study;
-keep patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name dcm_que_occ_sn repeat_sn value_text qualifying_value study;
+data occ_scr2;set scr2_data ;by dcm_subset_name _name_;run;proc sort data=occ_scr2;
+by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name dcm_question_grp_name _name_ repeat_sn ;run;
+data tran.scr2;retain patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name repeat_sn value_text qualifying_value study;
+keep patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name repeat_sn value_text qualifying_value study;
 length dci_name dcm_question_grp_name $30 value_text $500 qualifying_value $30; set occ_scr2(rename=(_name_=dcm_question_name col1=value_text));
 
 if dcm_question_name in('PATIENT','CLI_PLAN_EVE_NAME','SUBEVENT_NUMBER','DCI_NAME','DCM_NAME','DCM_SUBSET_NAME','DCM_QUESTION_GRP_NAME', 'DCM_QUE_OCC_SN','REPEAT','REPEAT_SN','REC_N','QUALIFYING_VALUE','STUDY') then delete;run;

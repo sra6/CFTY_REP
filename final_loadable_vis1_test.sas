@@ -111,10 +111,10 @@ proc transpose data=vis1 out=tran_vis1;
 by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name dcm_question_grp_name repeat_sn qualifying_value study;var _all_;run;data tran_vis1;length dcm_subset_name $8;set tran_vis1;_NAME_=upcase(_NAME_);
 data vis1(drop=variable dataset);set newdata.formats;length _name_ $21 dcm_subset_name $8;if dataset='VIS1';_name_=variable ;run;
 proc sort data=vis1;by dcm_subset_name _name_;run;proc sort data=tran_vis1 out=vis1_data;by dcm_subset_name _name_;run;
-data occ_vis1;merge vis1_data vis1;by dcm_subset_name _name_;run;proc sort data=occ_vis1;
-by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name dcm_question_grp_name _name_ dcm_que_occ_sn repeat_sn ;run;
-data tran.vis1;retain patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name dcm_que_occ_sn repeat_sn value_text qualifying_value study;
-keep patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name dcm_que_occ_sn repeat_sn value_text qualifying_value study;
+data occ_vis1;set vis1_data ;by dcm_subset_name _name_;run;proc sort data=occ_vis1;
+by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name dcm_question_grp_name _name_ repeat_sn ;run;
+data tran.vis1;retain patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name repeat_sn value_text qualifying_value study;
+keep patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name repeat_sn value_text qualifying_value study;
 length dci_name dcm_question_grp_name $30 value_text $500 qualifying_value $30; set occ_vis1(rename=(_name_=dcm_question_name col1=value_text));
 if dcm_question_name in('PATIENT','CLI_PLAN_EVE_NAME','SUBEVENT_NUMBER','DCI_NAME','DCM_NAME','DCM_SUBSET_NAME','DCM_QUESTION_GRP_NAME', 'DCM_QUE_OCC_SN','REPEAT','REPEAT_SN','REC_N','QUALIFYING_VALUE','STUDY') then delete;run;
 

@@ -115,10 +115,10 @@ proc sort data= dmg1;by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_n
 by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name dcm_question_grp_name repeat_sn qualifying_value study;var _all_;run;data tran_dmg1;length dcm_subset_name $8;set tran_dmg1;_NAME_=upcase(_NAME_);
 data dmg1(drop=variable dataset);set newdata.formats;length _name_ $21 dcm_subset_name $8;if dataset='DMG1';_name_=variable ;run;
 proc sort data=dmg1;by dcm_subset_name _name_;run;proc sort data=tran_dmg1 out=dmg1_data;by dcm_subset_name _name_;run;
-data occ_dmg1;merge dmg1_data dmg1;by dcm_subset_name _name_;run;proc sort data=occ_dmg1;
-by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name dcm_question_grp_name _name_ dcm_que_occ_sn repeat_sn ;run;
-data tran.dmg1;retain patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name dcm_que_occ_sn repeat_sn value_text qualifying_value study;
-keep patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name dcm_que_occ_sn repeat_sn value_text qualifying_value study;
+data occ_dmg1;set dmg1_data ;by dcm_subset_name _name_;run;proc sort data=occ_dmg1;
+by patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name dcm_question_grp_name _name_ repeat_sn ;run;
+data tran.dmg1;retain patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name repeat_sn value_text qualifying_value study;
+keep patient CLI_PLAN_EVE_NAME Subevent_Number DCI_NAME dcm_name dcm_subset_name  dcm_question_grp_name  dcm_question_name repeat_sn value_text qualifying_value study;
 length dci_name dcm_question_grp_name $30 value_text $500 qualifying_value $30; set occ_dmg1(rename=(_name_=dcm_question_name col1=value_text));
 if dcm_question_name in('PATIENT','CLI_PLAN_EVE_NAME','SUBEVENT_NUMBER','DCI_NAME','DCM_NAME','DCM_SUBSET_NAME','DCM_QUESTION_GRP_NAME', 'DCM_QUE_OCC_SN','REPEAT','REPEAT_SN','REC_N','QUALIFYING_VALUE','STUDY') then delete;run;
 
